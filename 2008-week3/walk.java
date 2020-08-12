@@ -28,7 +28,7 @@ city_map의 크기는 m × n이다.
 출발점과 도착점의 city_map[i][j] 값은 0이다.
 */
 
-//dfs
+// dfs ( 시간초과 )
 class Solution {
     int MOD = 20170805;
     int answer = 0;
