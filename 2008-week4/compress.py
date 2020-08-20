@@ -26,13 +26,36 @@
 # s는 알파벳 소문자로만 이루어져 있습니다.
 
 '''
-"aabbaccc"	7
-"ababcdcdababcdcd"	9
+"aabbaccc"	7 -> 1개씩 2a2ba3c
+"ababcdcdababcdcd"	9 ->
 "abcabcdede"	8
 "abcabcabcabcdededededede"	14
 "xababcdcdababcdcd"	17
 '''
 
 def solution(s):
-    answer = 0
+    answer = len(s)
+    if ( len(s) == 1 ): return 1
+    # 1개에서 ~ N개까지
+    for i in range(1,len(s)):
+        com_str = ''
+        count = 1
+        parsing = [s[j:j+i] for j in range(0, len(s), i)] # 갯수만큼 문자열 나누기
+        parsing.append('') # 마지막 문자열 비교위해 공백 추가
+        #print(parsing)
+        prev = parsing[0]
+        for k in range(1,len(parsing)): # 문자열 비교
+            now = parsing[k]
+            if ( prev == now ): # 같은 문자열이면 count
+                count += 1
+            else: # 아니면
+                if ( count == 1 ): # 중복된게 없을때
+                    com_str += prev
+                else: # 중복되다 멈췄을 때
+                    com_str += str(count)+prev
+                count = 1
+            prev = now 
+        #print(com_str)
+        if ( len(com_str) < answer ) : answer = len(com_str) # 작은 값으로
+
     return answer
