@@ -15,6 +15,62 @@ lines 배열은 응답완료시간 S를 기준으로 오름차순 정렬되어 �
 
 # solution 함수에서는 로그 데이터 lines 배열에 대해 초당 최대 처리량을 리턴한다.
 
+from datetime import datetime, timedelta
+import datetime
+import collections
+ 
+# 1초는 999ms
 def solution(lines):
+    bar = collections.namedtuple('bar', 'time se') # 시각 / 시작시간 or 마침시간 인지
     answer = 0
+    now = 0
+    bar_data = []
+
+    # 문자열 parsing 2016-09-15 hh:mm:ss.sss 2.0s
+    for i in range(0,len(lines)):
+        clean = lines[i].split(" ") # 0 : 날짜, 1 : 시간분, 2 : 처리시간
+        # 연도 날짜
+        year_day = list(map(int,clean[0].split("-")))
+        # 시간분
+        hour_to_micro = clean[1].split(":")
+        sec_to_mircro = hour_to_micro[2].split(".")
+        hour_to_micro = list(map(int,hour_to_micro[0:2]))
+        sec_to_mircro = list(map(int,sec_to_mircro))
+        # 처리시간
+        clean[2] = clean[2].replace("s","")
+        clean[2] = float(clean[2])
+
+        end = datetime.datetime(year_day[0],year_day[1],year_day[2],hour_to_micro[0],hour_to_micro[1],sec_to_mircro[0],sec_to_mircro[1]*1000)
+        start = end - timedelta(seconds=clean[2])
+        # 배열에 넣기
+        bar_data.append(bar(time=start,se=0))
+        bar_data.append(bar(time=end+timedelta(microseconds=999999),se=1)) # end 시각으로터 1초 안에 있으면 같은 작업 단위라서
+
+
+    # 오름차순 시간에 맞춰서 정렬하기
+    bar_data = sorted(bar_data, key = lambda x : x.time)
+    #print(bar_data)
+
+    for i in range(0,len(bar_data)):
+        if ( bar_data[i].se == 0): # start라면 : 작업 시작
+            now += 1
+        else: # end 라면 : 작업종료
+            now -= 1
+        if ( answer < now ): answer = now
+
     return answer
+
+lines =  [
+"2016-09-15 20:59:57.421 0.351s",
+"2016-09-15 20:59:58.233 1.181s",
+"2016-09-15 20:59:58.299 0.8s",
+"2016-09-15 20:59:58.688 1.041s",
+"2016-09-15 20:59:59.591 1.412s",
+"2016-09-15 21:00:00.464 1.466s",
+"2016-09-15 21:00:00.741 1.581s",
+"2016-09-15 21:00:00.748 2.31s",
+"2016-09-15 21:00:00.966 0.381s",
+"2016-09-15 21:00:02.066 2.62s"
+]
+
+print(solution(lines))
