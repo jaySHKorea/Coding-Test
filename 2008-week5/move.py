@@ -38,13 +38,15 @@ def solution(N,L,R,move):
     answer = 0 # 총 인구이동 횟수
     
     while ( True ):
-        answer += 1
+        move_uni = [[0 for col in range(N)] for row in range(N)]
         flag = False 
         for i in range(0,N):
             for j in range(0,N):
                 if ( move_uni[i][j] == False ): # 가보지 않은 곳이라면
-                    bfs(i,j) # bfs 탐색
-        if ( flag == False ):break            
+                    bfs(i,j) # bfs 탐색 
+        if ( flag == False ): break
+        answer += 1  
+
 
     return answer
 
