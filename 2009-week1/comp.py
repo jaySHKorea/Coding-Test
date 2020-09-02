@@ -39,3 +39,30 @@ AK를 사전에 28 번째로 등록한다.
 출력 형식
 주어진 문자열을 압축한 후의 사전 색인 번호를 배열로 출력하라.
 '''
+dictionary = ['0','A','B','C','D','E','F','G','H','I','J',
+                'K','L','M','N','O','P','Q','R','S','T',
+                    'U','V','W','X','Y','Z']
+
+def solution(msg):
+    answer = []
+    cur = 0 # 커서
+    idx = 1 # 커서 끝
+    while (True):
+        if ( cur == len(msg) ) : break # 문자의 끝까지 왔다면 종료
+        while (True):
+            if ( msg[cur:idx] in dictionary and idx <= len(msg)): # 현재 글자가 딕셔너리에 있다면
+                idx += 1
+            else : 
+                # 없다면 그 전 문자의 색인을 answer에 push하고
+                # dictionary에 현재 문자 색인 push
+                # cur,idx 옮기기
+                answer.append(dictionary.index(msg[cur:idx-1]))
+                dictionary.append(msg[cur:idx])
+                cur = idx-1
+                idx = cur+1
+                break
+
+    return answer
+
+#solution("KAKAO")
+#solution("TOBEORNOTTOBEORTOBEORNOT")
