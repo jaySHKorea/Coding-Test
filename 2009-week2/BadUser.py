@@ -61,7 +61,6 @@ def dfs(ban_idx,case,u_occ,b_occ):
             u_occ[i] = False
             b_occ[ban_idx] = -1
 
-
 print(solution(["frodo", "fradi", "crodo", "abc123", "frodoc"], ["fr*d*", "abc1**"]))
 #print(solution(["frodo", "fradi", "crodo", "abc123", "frodoc"], ["*rodo", "*rodo", "******"]))
 #print(solution(["frodo", "fradi", "crodo", "abc123", "frodoc"], ["fr*d*", "*rodo", "******", "******"]))

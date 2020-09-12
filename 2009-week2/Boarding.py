@@ -33,7 +33,7 @@ def search(left, right, times, n):
             right = mid-1 # 더 적어질 수 있으므로 right = mid-1
         else:
             left = mid+1 # 처리해야할 사람보다 더 적게 처리했다 : 더 많이 시간이 필요하다 -> left = mid+1
-            
+
     return answer
 
 def solution(n, times):
