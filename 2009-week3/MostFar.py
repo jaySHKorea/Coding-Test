@@ -14,3 +14,41 @@ n개의 노드가 있는 그래프가 있습니다. 각 노드는 1부터 n까�
 간선은 양방향이며 총 1개 이상 50,000개 이하의 간선이 있습니다.
 vertex 배열 각 행 [a, b]는 a번 노드와 b번 노드 사이에 간선이 있다는 의미입니다.
 '''
+
+from collections import deque
+
+# bfs
+def solution(n, edge):
+    answer = 0
+    check = [ False for x in range(n+1)]
+    connect = [ [] for x in range(n+1)]
+
+    for node in edge: # 각 노드들에 연결되있는 노드 집합
+        connect[node[0]].append(node[1])
+        connect[node[1]].append(node[0])
+
+    answer = bfs(connect,check ,1)
+    return answer
+
+
+def bfs(connect, check, start):
+    answer = 0
+    check[start] = True # 확인했는지
+
+    queue = deque()
+    for value in connect[start]: # 시작(1)과 연결된 노드 queue로
+        queue.append(value)
+        check[value] = True
+    
+    while len(queue) != 0 :
+        maxx = len(queue)
+        for _ in range(maxx): # 현재 레벨에 append된 노드까지만
+            root = queue.popleft()
+            for node in connect[root]:
+                if check[node] == False:
+                    check[node] = True
+                    queue.append(node)
+        answer = maxx
+    return answer
+
+print(solution(6,[[3, 6], [4, 3], [3, 2], [1, 3], [1, 2], [2, 4], [5, 2]]))
