@@ -61,14 +61,13 @@ def solution(R,C,T,A):
 
 def spread(R,C,T,A):
     global m_loc
-    # 위 아래 오 왼
     q = deque()
 
     for i in range(R):
         for j in range(C):
-            if (A[i][j] >= 5):
+            if (A[i][j] >= 5): # 5가 넘어야 확산되는 미세먼지가 있음
                 q.append([i, j, A[i][j]])
-            elif ( A[i][j] == -1):
+            elif ( A[i][j] == -1): # 기계라면 index append
                 m_loc.append(i)
 
     while (len(q) != 0):
@@ -76,16 +75,16 @@ def spread(R,C,T,A):
         s_dust = int(dust[2] / 5)
         cnt = 0
  
-        for k in range(4):
-            nx = dust[1] + dx[k]
+        for k in range(4):  # 위 아래 오 왼
+            nx = dust[1] + dx[k] 
             ny = dust[0] + dy[k] 
  
-            if ( nx >= 0 and nx < C and ny >= 0 and ny < R):
-                if (A[ny][nx] != machine):
-                    cnt += 1
-                    A[ny][nx] += s_dust
+            if ( nx >= 0 and nx < C and ny >= 0 and ny < R): # 인덱스 벗어나지 않았을 때
+                if (A[ny][nx] != machine): # 기계가 아니라면
+                    cnt += 1 # 확산 개수
+                    A[ny][nx] += s_dust # 확산
                 
-        A[dust[0]][dust[1]] -= s_dust*cnt
+        A[dust[0]][dust[1]] -= s_dust*cnt # 빼주기
 
 def circulate(mach,dirr,A,A_copy): 
     # ba(반시계) : 오->위->왼->아래
@@ -93,18 +92,15 @@ def circulate(mach,dirr,A,A_copy):
     x = mach
     y = 0
     A_copy[x][y] = 0
-    for k in range(4):
+    for k in range(4): #
         while True:
             nx = y + dx[dirr[k]]
             ny = x + dy[dirr[k]]
-
-            if (not ( ny >= 0 and ny < R and nx >= 0 and nx < C)):
+            if (not ( ny >= 0 and ny < R and nx >= 0 and nx < C)): # 인덱스 끝을 만났거나
                 break
-
-            if ( ny == mach and nx == 0 ):
+            if ( ny == mach and nx == 0 ): # 다시 제자리로 돌아왔을 때
                 break
-
-            A[ny][nx] = A_copy[x][y] # ny : 2 , nx : 7
+            A[ny][nx] = A_copy[x][y]
             y = nx
             x = ny
 
