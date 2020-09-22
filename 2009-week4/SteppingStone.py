@@ -16,7 +16,32 @@ n 은 1 이상 바위의 개수 이하입니다.
 # 0 2 11 14 17 21
 # 2 9 3 3 4 
 
-def solution(distance, rocks, n):
+# 첫번째 아이디어
+'''
+1. 돌 사이의 거리 값을 key로 배열을 정렬
+2. 가장 작은 값을 pop하고
+3. 다시 돌 위치 값을 key로 배열을 정렬
+4. pop한 값의 좌우 거리에 대해서 더 작은 값인 돌의 위치를 택해서 더한 후 append
+
+위를 n번 반복한 후에 돌 사이의 거리 값을 key로 배열을 정렬
+가장 작은 0 인덱스 값 return
+
+=> sort를 너무 많이함
+'''
+
+# 더 좋은 정답
+'''
+mid = (left+right) == 10일때
+prev = 0 r = 2 -> mid 보다 거리가 작으므로 2 돌을 지운다
+prev = 0 r = 11 -> mid 보다 거리가 크므로  mins를 r-prev로 바꾼다, prev는 11이 됨
+prev = 11 r = 14 -> mid보다 거리가 작으므로 14 돌을 지운다
+prev = 11 r = 17 -> mid보다 거리가 작으므로 17 돌을 지운다
+prev = 11 r = 21 -> mid랑 거리가 같으므로 mins를 r-prev로 바꾼다. prev는 21이 됨
+prev = 21 r = 25 -> mid보다 거리가 작으므로 25 돌을 지운다
+'''
+
+'''
+def solution1(distance, rocks, n):
     rocks = sorted(rocks)
     rocks.insert(0,0)
     rocks.append(25)
@@ -69,7 +94,40 @@ def b_search(l,s_num):
         return mid,1
     else:
         return mid,0
+'''
 
+import math
 
+def solution2(distance, rocks, n):
+    rocks.sort()
+    rocks.append(distance)
+    left, right = 0, distance
+    answer = 0
 
-print(solution(25,[2,14,11,21,17],2))
+    while left <= right:
+        prev = 0
+        mins = math.inf
+        removed = 0
+
+        # 바위 사이의 최소 거리
+        mid = int((left+right)/2)
+        # 제거할 돌 찾기
+        for r in rocks:
+            # 최소거리보다 작은 간격의 돌을 찾음
+            # r 위치의 돌을 지움 -> prev와 다음 r 위치의 돌을 비교
+            if r-prev < mid:
+                removed += 1
+            else: # 가장 큰 최소 거리 발견 mins 바꾸고, 다음돌로 뛰어넘음 prev=r
+                mins = min(mins,r-prev)
+                prev = r
+
+        # 제거한 돌 개수가 기준보다 많다 : 최소거리를 줄인다
+        if removed > n:
+            right = mid-1
+        # 제거한 돌 개수가 기준보다 적거나 같다 : answer를 바꾸고 최소거리를 늘린다
+        else:
+            answer = mins
+            left = mid+1
+
+    return answer
+print(solution2(25,[2,14,11,21,17],2))
