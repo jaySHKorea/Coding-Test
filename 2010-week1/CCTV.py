@@ -32,14 +32,102 @@ CCTV의 최대 개수는 8개를 넘지 않는다.
 import sys
 import copy
 
-def solution(N,M,CCTV):
-    answer = 0
-    return answer
+res = 100 # 사각지대 최소값
+dirr = [[1,0],[-1,0],[0,1],[0,-1]] #북, 남, 동, 서
+space = [] # 전체 공간
+cctv = [] # cctv
+
+# cctv 체크
+def dfs(cnt):
+    global res
+
+    # 최소값 갱신
+    new = 0
+    if ( cnt == len(cctv)):
+        for i in range(N):
+            for j in range(M):
+                if space[i][j] == 0:
+                    new += 1
+        res = min(res,new)
+        return res
+
+    # preview copy
+    prev = copy.deepcopy(cctv)
+
+    # cctv 좌표
+    now_x = cctv[cnt][0]
+    now_y = cctv[cnt][1]
+    now_cam = cctv[cnt][2]
+
+    # cctv 탐색
+    if ( now_cam == 1 ): # 북,남,동,서
+        for i in range(4):
+            turn(i,now_x,now_y)
+            dfs(cnt+1)
+            cctv = prev
+    elif ( now_cam == 2 ): # 북남, 동서
+        for i in range(2):
+            turn(2*i,now_x,now_y)
+            turn(2*i+1,now_x,now_y)
+            dfs(cnt+1)
+            cctv = prev
+    elif ( now_cam == 3 ): # 북동, 동남, 남서, 서북 03 13 02 12   
+        for i in range(4):  #0 1 2 3
+            turn(i%2,now_x,now_y)
+            turn(,now_x,now_y)
+    elif ( now_cam == 4 ): # 서북동, 북동남, 동남서,남서북
+        for i in range(4):
+
+    elif ( now_cam == 5 ): # 모든 방향임으로 cctv 배열 수정 필요 없음
+        for i in range(4):
+            turn(i,now_x,now_y)
+        dfs(cnt+1)
+
+def turn(d,x,y):
+    # 북 마킹
+    if ( d == 0 ):
+        for i in reversed(range(x-1)):
+            if ( cctv[i][y] == 6) : break
+            cctv[i][y] = -1
+        return
+    # 남 마킹
+    elif ( d == 1 ):
+        for i in range(x+1):
+            if ( cctv[i][y] == 6) : break
+            cctv[i][y] = -1
+        return
+    # 동 마킹
+    elif ( d == 2 ):
+        for i in range(y+1)):
+            if ( cctv[x][i] == 6) : break
+            cctv[x][i] = -1
+        return
+    # 서 마킹
+    elif ( d == 3 ):
+        for i in reversed(range(y-1)):
+            if ( cctv[x][i] == 6) : break
+            cctv[x][i] = -1
+        return
 
 if __name__ == '__main__':
-    CCTV = [] # 입력 배열
+    global space, cctv
     var = list(map(int,sys.stdin.readline().rstrip().split(" ")))
     N = var[0] # R : 가로 행 개수
     M = var[1] # L : 세로 열 개수
     for i in range(0,N):
-        CCTV.append(list(map(int,sys.stdin.readline().rstrip().split())))
+        space.append(list(map(int,sys.stdin.readline().rstrip().split())))
+        for j in range(0,M):
+            if (space[i][j] != 0 or space[i][j] != 6): # cctv라면
+                cctv.append([i,j,space[i][j]])
+
+    print(dfs(0))
+
+'''
+6 6
+0 0 0 0 0 0
+0 2 0 0 0 0
+0 0 0 0 6 0
+0 6 0 0 2 0
+0 0 0 0 0 0
+0 0 0 0 0 5
+'''
