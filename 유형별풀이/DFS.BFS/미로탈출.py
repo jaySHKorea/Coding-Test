@@ -13,7 +13,7 @@ def outMaze(N,M,maze):
     queue.append((0,0,-1))
 
     while queue :
-        x,y,dirr = queue.popleft()
+        x,y,dirr = queue.popleft() # x좌표, y좌표, 자기가 온 방향
 
         # 동서남북 탐색
         for i in range(4):
