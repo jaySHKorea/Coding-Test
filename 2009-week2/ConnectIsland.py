@@ -12,8 +12,8 @@ B 섬과 C 섬 사이에 다리가 있으면 A 섬과 C 섬은 서로 통행 가
 '''
 섬의 개수 n은 1 이상 100 이하입니다.
 costs의 길이는 ((n-1) * n) / 2이하입니다.
-임의의 i에 대해, costs[i][0] 와 costs[i] [1]에는 다리가 연결되는 두 섬의 번호가 들어있고,
-costs[i] [2]에는 이 두 섬을 연결하는 다리를 건설할 때 드는 비용입니다.
+임의의 i에 대해, costs[i][0] 와 costs[i][1]에는 다리가 연결되는 두 섬의 번호가 들어있고,
+costs[i][2]에는 이 두 섬을 연결하는 다리를 건설할 때 드는 비용입니다.
 같은 연결은 두 번 주어지지 않습니다. 또한 순서가 바뀌더라도 같은 연결로 봅니다.
 즉 0과 1 사이를 연결하는 비용이 주어졌을 때, 1과 0의 비용이 주어지지 않습니다.
 모든 섬 사이의 다리 건설 비용이 주어지지 않습니다. 이 경우, 두 섬 사이의 건설이 불가능한 것으로 봅니다.
@@ -27,8 +27,8 @@ def solution(n, costs):
     graph = [costs[0][0]] # 첫번째 노드
     while (len(graph) != n):
         for i, cost in enumerate(costs):
-            if (cost[0] in graph) and (cost[1] in graph): continue # 둘 다 있다면
-            if (cost[0] in graph) or (cost[1] in graph):
+            if (cost[0] in graph) and (cost[1] in graph): continue # 둘 다 있다면 : 사이클 발생
+            if (cost[0] in graph) or (cost[1] in graph): # 둘중 하나만 있을 때 
                 answer += cost[2]
                 graph.append(cost[0])
                 graph.append(cost[1])
