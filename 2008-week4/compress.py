@@ -60,3 +60,5 @@ def solution(s):
         if ( len(com_str) < answer ) : answer = len(com_str) # 작은 값으로
 
     return answer
+
+solution('ababcdcdababcdcd')
