@@ -1,4 +1,6 @@
 '''
+    1h, 삭제기능 수정해야함
+
     구현 12 - 기둥과 보 설치
     2020 카카오 신입 공채
 
@@ -16,79 +18,39 @@
 
 from collections import deque
 
+'''
+    기둥과 보는 각각 3가지의 설치가능조건이 있다.
+    설치/삭제는 조건이 같다.
+
+    어떤 요소를 설치했을 때(queue 삽입), 설치된 모든 요소 중 조건에 어긋나는게 생긴다면 설치불가(queue 제거)
+    어떤 요소를 삭제했을 때(queue 제거), 설치된 모든 요소 중 조건에 어긋나는게 생긴다면 삭제불가(queue 삽입)
+'''
+def check(result):
+    col, beam = 0, 1
+    for x, y, a in result:
+        if a == col: # 기둥일 때
+            if y != 0 and (x, y-1, col) not in result and (x-1, y, beam) not in result and (x, y, beam) not in result:
+                return False
+        else: # 보일 때
+            if (x, y-1, col) not in result and (x+1, y-1, col) not in result and not ((x-1, y, beam) in result and (x+1, y, beam) in result):
+                return False
+    return True
+
 def solution(n, build_frame):
-    answer = deque()
-    col = [[0 for _ in range(n+1)] for _ in range(n+1)] # 기둥 배열
-    beam = [[0 for _ in range(n+1)] for _ in range(n+1)] # 보 배열
+    result = deque()
+    for x, y, a, build in build_frame:
+        item = (x, y, a)
+        if build: # 추가일 때
+            result.append(item)
+            if check(result) == False:
+                result.remove(item)
+        elif item in result: # 삭제할 때
+            result.remove(item)
+            if check(result) == False:
+                result.append(item)
 
-    for build in build_frame:
-        x,y = build[0],build[1]
-        sep = build[2] # 0은 기둥 1은 보
-        br = build[3] # 0은 삭제 1은 설치
-
-        # 기둥일 때
-        if sep == 0:
-            # 설치 일때
-            if br == 1:
-                # 바닥에 놓을 때
-                if y == 0:
-                    answer.append([x,y,0])
-                    col[x][y] = 1
-                else:
-                    if beam[x-1][y] == 1 or beam[x][y] == 1 or col[x][y-1] == 1:
-                        answer.append([x,y,0])
-                        col[x][y] = 1
-            # 삭제 일때
-            else:
-                flag = False
-                if beam[x][y+1] == 0 and beam[x-1][y+1] == 0:
-                    flag = True
-                else:
-                    if beam[x][y+1] == 1 and col[x+1][y] == 1:
-                        flag = True
-                    else:
-                        flag = False
-                    if beam[x-1][y+1] == 1 and col[x-1][y] == 1:
-                        flag = True
-                    else:
-                        flag = False
-                if flag == True:
-                    answer.remove([x,y,0])
-                    col[x][y] = 0
-        # 보일 때
-        else:
-            if br == 1:
-                if col[x][y-1] == 1:
-                    answer.append([x,y,1])
-                    beam[x][y] = 1
-                elif col[x+1][y-1] == 1:
-                    answer.append([x,y,1])
-                    beam[x][y] = 1
-                elif beam[x-1][y] == 1 and beam[x+1][y] == 1:
-                    answer.append([x,y,1])
-                    beam[x][y] = 1
-            # 삭제
-            else:
-                flag = False
-                if beam[x-1][y] == 0 and beam[x+1][y] == 0:
-                    flag = True
-                else:
-                    if beam[x-1][y] == 1 and (col[x][y-1] == 1 or col[x-1][y-1] == 1):
-                        flag = True
-                    else:
-                        flag = False
-                    if beam[x+1][y] == 1 and (col[x+1][y-1] == 1 and col[x+2][y-1] == 1):
-                        flag = True
-                    else:
-                        flag = False
-                if flag == True:
-                    answer.remove([x,y,1])
-                    beam[x][y] = 0
-    
-    answer = list(answer)
-    answer = sorted(answer,key = lambda x : (x[0], x[1], x[2]))
-
-    return answer
+    answer = list(result)
+    return sorted(answer, key = lambda x : (x[0], x[1], x[2]))
 
 print(solution(5,[[1,0,0,1],[1,1,1,1],[2,1,0,1],[2,2,1,1],[5,0,0,1],[5,1,0,1],[4,2,1,1],[3,2,1,1]]))
 print(solution(5, [[0,0,0,1],[2,0,0,1],[4,0,0,1],[0,1,1,1],[1,1,1,1],[2,1,1,1],[3,1,1,1],[2,0,0,0],[1,1,1,0],[2,2,0,1]]))
