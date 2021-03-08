@@ -44,7 +44,7 @@ def separate(string):
     # 올바른 문자열인 경우
     if check(u):
         temp += u
-        if ( v != ''):
+        if v != '':
             temp += separate(v)
     # 올바른 문자열이 아닌 경우
     else:
