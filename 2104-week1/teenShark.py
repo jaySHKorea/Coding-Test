@@ -56,6 +56,7 @@ def eat(shark,fishes,i,summ,move):
     # 물고기들의 이동
     rotate(n_shark,n_fishes,n_move)
 
+    # 가능한 상어의 이동 찾기
     while True:
         nx = x+dirr[shark_dir][0]
         ny = y+dirr[shark_dir][1]
