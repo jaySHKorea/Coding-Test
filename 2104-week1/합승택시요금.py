@@ -2,11 +2,51 @@
     2021 카카오 공채 - 합승 택시 요금 55m
 
     특정 노드까지 함께 합승할 수 있다고 할 때, 최소 총 비용을 구하시오.
-    효율성 4,5,15,30 실패
 '''
 
 import heapq
-import copy
+
+def solution(n, s, a, b, fares):
+    answer = int(1e9)
+
+    graph = [[] for i in range(n+1)]
+
+    # 그래프 정보
+    for f in fares:
+        graph[f[0]].append((f[1],f[2]))
+        graph[f[1]].append((f[0],f[2]))
+
+    # 중점을 두고 각 세 점(출발,A,B)의 거리
+    for i in range(1,n+1):
+        distance = dijkstra(i,n,graph)
+        answer = min(distance[s]+distance[a]+distance[b],answer)
+
+    return answer
+
+# faster Dijkstra - 우선순위큐
+def dijkstra(start,n,graph):
+    INF = int(1e9)
+    distance = [INF] * (n+1)
+    
+    q = []
+    heapq.heappush(q,(0,start))
+    distance[start] = 0
+    while q:
+        dist,now = heapq.heappop(q)
+        if distance[now] < dist: # heap의 a까지의 최단거리보다 배열에 기록된 최단거리가 더 짧으면 스킵
+            continue
+        for j in graph[now]: # a에서 뻗는 노드를 본다
+            cost = dist + j[1] # dist(a까지의 최단거리) + 뻗을 노드에 대한 비용
+            if cost < distance[j[0]]: # 뻗을 노드까지의 총 비용이 배열에 기록된 뻗을 노드까지의 최단거리보다 짧으면 배열 갱신
+                distance[j[0]] = cost # 갱신
+                heapq.heappush(q, (cost, j[0])) # heap push - q에 비용,뻗을노드 push
+
+    return distance
+
+print(solution(6,4,6,2,[[4, 1, 10], [3, 5, 24], [5, 6, 2], [3, 1, 41], [5, 1, 24], [4, 6, 50], [2, 4, 66], [2, 3, 22], [1, 6, 25]]))
+print(solution(	6, 4, 5, 6, [[2, 6, 6], [6, 3, 7], [4, 6, 7], [6, 5, 11], [2, 5, 12], [5, 3, 20], [2, 4, 8], [4, 3, 9]]))
+
+'''
 
 def solution(n, s, a, b, fares):
     answer = 0
@@ -80,6 +120,4 @@ def dijkstra(start,n,graph):
         if way[i] != []:
             way[i].append(i)
     return way,distance
-
-print(solution(6,4,6,2,[[4, 1, 10], [3, 5, 24], [5, 6, 2], [3, 1, 41], [5, 1, 24], [4, 6, 50], [2, 4, 66], [2, 3, 22], [1, 6, 25]]))
-print(solution(	6, 4, 5, 6, [[2, 6, 6], [6, 3, 7], [4, 6, 7], [6, 5, 11], [2, 5, 12], [5, 3, 20], [2, 4, 8], [4, 3, 9]]))
+'''
