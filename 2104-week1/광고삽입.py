@@ -37,7 +37,7 @@ def solution(play_time, adv_time, logs):
     answer = ''
     ad = [0 for _ in range(360001)]
 
-    # 1초마다
+    # 1초마다 순간에 몇 개의 광고가 있는지 표시
     for log in logs:
         sep = log.split("-")
         start = toSecond(sep[0])
@@ -45,23 +45,25 @@ def solution(play_time, adv_time, logs):
         for i in range(start,finish):
             ad[i] += 1
 
-    N = toSecond(play_time)
-    lenn = toSecond(adv_time)
+    N = toSecond(play_time) # 전체 플레이타임
+    lenn = toSecond(adv_time) # 광고 시간
     idx = 0
     sum = 0
 	
     q = []
 
+    # 0초(처음)부터 광고를 상영할 때 총 광고가 시청자들에게 보여진 시간
     for i in range(0,lenn):
         sum += ad[i]
         q.append(ad[i])
     maxSum = sum
 
+    # 1초씩 한칸씩 밀어서 시간 계산
     for i in range(lenn,N):
         sum += ad[i]
         q.append(ad[i])
-        sum -= q[0]
-        q.pop(0)
+        sum -= q[0] # 맨 앞의 1초의 상영한 사람수
+        q.pop(0) # 큐에서 삭제
         if sum > maxSum:
             idx = i-lenn+1
             maxSum = sum
