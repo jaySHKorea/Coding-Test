@@ -21,69 +21,36 @@ dirr = [-1,1] # 상하좌우
 answer = 0
 def solution(board, r, c):
     global answer
-    cards = []
+    cards = [[] for _ in range(7)]
     for i in range(4):
         for j in range(4):
             if board[i][j] != 0:
-                cards.append((board[i][j],i,j))
+                cards[board[i][j]].append([i,j])
 
-    for card in cards:
-        dfs(card,board) 
     return answer
 
-def dfs(r,c,card,cards,board):
-    global answer
-    n_cards = deepcopy(cards)
-    n_board = deepcopy(board)
-    card_num,nr,nc = card
+def move(r,c,board,cards):
+    nboard = deepcopy(board)
+    ncards = deepcopy(cards)
 
-    while r != nr and c != nc:
-        if r == nr and c == nc: # 현재 자리에 카드가
-            answer += 1 # enter
-            break
-        # 같은 행 혹은 열
-        if r == nr:
-            answer += 1
-            if c < nc: # 우 방향 이동
-                r,c = ctrldir(r,c,1,0,board)
-            else: # 좌 방향 이동
-                r,c = ctrldir(r,c,0,0,board)
-        elif c == nc:
-            answer += 1
-            if r < nr: # 아래 방향 이동
-                r,c = ctrldir(r,c,1,1,board)
-            else:
-                r,c = ctrldir(r,c,0,1,board)
-        # 둘 다 다를 때
-        else:
-            # x 맞추기
-            dist = abs(nr-r)
-            if r < nr:
-                mr,mc = ctrldir(r,c,1,1,board)
-            else:
-                mr,mc = ctrldir(r,c,0,1,board)
-            if r == mr:
-                answer += 1
-                r = mr
-            else:
-                r = mr
+    for i,card in enumerate(ncards):
+        if card == []:
+            continue
+        one,two = card
+        oneCount = count(r,c,one,two,nboard)
+        twoCount = count()
+        nboard[one[0]][one[1]] = 0
+        nboard[two[0]][two[1]] = 0
 
-    q = deque()
 
-def ctrldir(r,c,dir,rc,board):
-    if rc == 0: # 좌우 움직임
-        c += dirr[dir]
-        while 0 <= c < 4:
-            if board[r][c] != 0:
-                return r,c
-            c += dirr[dir]
-        return r,c+dirr[(dir+1)%2]
-    else: # 상하 움직임
-        r += dirr[dir]
-        while 0 <= r < 4:
-            if board[r][c] != 0:
-                return r,c
-            r += dirr[dir]
-        return r+dirr[(dir+1)%2],c
+        
+
+    return answer
+
+def count(r,c,one,two,board):
+    # 현재 위치로 첫번째 카드로 이동
+
+    # 첫번째 카드에서 두번째 카드로 이동
+    return two[0],two[1]
 
 print(solution([[1,0,0,3],[2,0,0,0],[0,0,0,2],[3,0,1,0]],1,0))
